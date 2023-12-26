@@ -12,3 +12,4 @@ Sirma academy final project.
 
     TODO outside of the final exam
     - Finish Project dto and it's controller/service and it's relationship to the already existing tables/dtos
+The version in master is the one before the deadline, the one in main is me polishing it up after the deadline
