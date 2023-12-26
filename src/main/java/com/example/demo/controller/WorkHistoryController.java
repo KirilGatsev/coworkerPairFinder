@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.model.Employee;
 import com.example.demo.model.WorkHistory;
 import com.example.demo.service.WorkHistoryService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,25 +18,24 @@ public class WorkHistoryController {
     }
 
     @PostMapping("/user/{user_id}")
-    public WorkHistory saveWorkHistory(@RequestBody WorkHistory workHistory,
-                                       @PathVariable(name = "user_id") int user_id){
-        System.out.println(workHistory);
-       return this.workHistoryService.saveEntity(workHistory, user_id);
+    public ResponseEntity<WorkHistory> saveWorkHistory(@RequestBody WorkHistory workHistory,
+                                                       @PathVariable(name = "user_id") int user_id){
+       return new ResponseEntity<>(this.workHistoryService.saveEntity(workHistory, user_id), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}/find_pair")
-    public String findLongestPartner(@PathVariable(name = "id") Integer id){
-        return this.workHistoryService.findLongestPartner(id);
+    public ResponseEntity<String> findLongestPartner(@PathVariable(name = "id") Integer id){
+        return new ResponseEntity<>(this.workHistoryService.findLongestPartner(id), HttpStatus.OK);
     }
 
     @PostMapping("/file/{filename}")
-    public String saveWorkHistoriesFromFile(@PathVariable(name = "filename") String filename){
-        return this.workHistoryService.saveWorkHistoriesFromFile(filename);
+    public ResponseEntity<String> saveWorkHistoriesFromFile(@PathVariable(name = "filename") String filename){
+        return new ResponseEntity<>(this.workHistoryService.saveWorkHistoriesFromFile(filename), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public WorkHistory updateWorkHistoryById(@RequestBody WorkHistory workHistory,
+    public ResponseEntity<WorkHistory> updateWorkHistoryById(@RequestBody WorkHistory workHistory,
                                        @PathVariable(name = "id") int id){
-        return this.workHistoryService.updateEntity(workHistory, id);
+        return new ResponseEntity<>(this.workHistoryService.updateEntity(workHistory, id), HttpStatus.OK);
     }
 }

@@ -6,6 +6,7 @@ import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.repository.WorkHistoryRepository;
 import com.example.demo.service.crudServices.CrudService;
 import com.example.demo.util.WorkHistoryFileUploader;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,7 @@ public class WorkHistoryService implements CrudService<WorkHistory, Integer> {
     //so not sure which one is better/more correct
     public WorkHistory saveEntity(WorkHistory entity, int user_id){
         entity.setEmployeeId(this.employeeRepository.findById(user_id)
-                .orElseThrow(() -> new RuntimeException("placeholder")));
+                .orElseThrow(() -> new EntityNotFoundException("Employee was not found")));
         return this.saveEntity(entity);
     }
 
@@ -59,7 +60,7 @@ public class WorkHistoryService implements CrudService<WorkHistory, Integer> {
     @Override
     public WorkHistory getEntityById(int id) {
         return this.workHistoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("placeholder"));
+                .orElseThrow(() -> new EntityNotFoundException("Employee was not found"));
     }
 
     @Override
@@ -70,7 +71,7 @@ public class WorkHistoryService implements CrudService<WorkHistory, Integer> {
     @Override
     public WorkHistory updateEntity(WorkHistory entity, Integer id) {
         if(!this.workHistoryRepository.existsById(id)){
-            throw new RuntimeException("placeholder");
+            throw new EntityNotFoundException("Employee was not found");
         }
         //TODO validations
         entity.setId(id);
@@ -84,7 +85,7 @@ public class WorkHistoryService implements CrudService<WorkHistory, Integer> {
 
     public String findLongestPartner(Integer id){
         Employee emp1 = this.employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("placeholder"));
+                .orElseThrow(() -> new EntityNotFoundException("Employee was not found"));
         DataHolder res = findCommonProjects(emp1);
         return res != null? res.employeeId + " " + res.days : "No overlap found";
     }
@@ -96,7 +97,7 @@ public class WorkHistoryService implements CrudService<WorkHistory, Integer> {
         for(WorkHistory wh: employee.getWorkHistory()){
             WorkHistory commonWh = this.workHistoryRepository.findByEmployeeIdIsNotAndProjectIdIs(employee,
                             wh.getProjectId())
-                    .orElseThrow(() -> new RuntimeException("placeholder"));
+                    .orElseThrow(() -> new EntityNotFoundException("Employee was not found"));
             if(overlap(wh, commonWh)){
                 long currOverlap = periodFinder(wh, commonWh);
                 if(longest < currOverlap){

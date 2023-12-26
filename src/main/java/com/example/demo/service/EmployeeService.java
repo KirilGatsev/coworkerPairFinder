@@ -4,6 +4,7 @@ import com.example.demo.model.Employee;
 import com.example.demo.model.WorkHistory;
 import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.service.crudServices.CrudService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,7 +32,8 @@ public class EmployeeService implements CrudService<Employee, Integer> {
 
     @Override
     public Employee getEntityById(int id) {
-        Employee emp = this.employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("placeholder"));
+        Employee emp = this.employeeRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Employee was not found"));
         for(WorkHistory wh: emp.getWorkHistory()){
             System.out.println(wh.toString());
         }
@@ -47,7 +49,7 @@ public class EmployeeService implements CrudService<Employee, Integer> {
     @Override
     public Employee updateEntity(Employee entity, Integer id) {
         if(!this.employeeRepository.existsById(id)){
-            throw new RuntimeException("placeholder");
+            throw new EntityNotFoundException("Employee was not found");
         }
         //TODO validations
         entity.setId(id);
